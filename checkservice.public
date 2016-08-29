@@ -1,0 +1,10 @@
+checkservice() {
+sleep 1
+ftsnum=`ps -ef | grep $FTS_NAME | grep -v grep | awk '{print $2}' | wc -l`
+netstat -an | grep  $FTS_RT_PORT | grep -i listen > /dev/null 2>&1
+if [ $? -eq 0 ] && [ $ftsnum -ne 0 ];then
+      return 1
+else
+      return 0
+fi
+}

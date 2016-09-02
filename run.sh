@@ -59,8 +59,8 @@ return 0
 fi
 export JAVA_HOME
 
-ps -ef | grep $APP_NAME | grep -v grep | awk '{print $2}' | xargs kill -9
-$JAVA_HOME/bin/java -jar $APP_DIR/$APP_NAME &
+ps -ef | grep $APP_NAME | grep -v grep | awk '{print $2}' | xargs kill -9 > /dev/null
+$JAVA_HOME/bin/java -jar $APP_DIR/$APP_NAME & > /dev/null
 checkservice
 if [  $? -ne 1 ];
 then
@@ -79,7 +79,7 @@ echo "[`mydate`]UPDATE_DIR not exists" >> $LOG_FILE
 return 0
 fi
 
-ps -ef | grep $APP_NAME | grep -v grep | awk '{print $2}' | xargs kill -9
+ps -ef | grep $APP_NAME | grep -v grep | awk '{print $2}' | xargs kill -9 > /dev/null
 sleep 3
 touch $UPDATING_FLAG_PATH
 cp -rf $UPDATE_DIR/*  $APP_DIR
@@ -89,6 +89,7 @@ if [ $? -ne 0 ]; then
 else
    rm -f $UPDATING_FLAG_PATH
    rm -f $FLAG_PATH
+   rm -fr $UPDATING_FLAG_PATH/*
    return 1
 fi 
 }
@@ -109,6 +110,3 @@ else
         startup
     fi
 fi
-
-
-

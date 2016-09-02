@@ -1,3 +1,9 @@
+2016-09-02
+1. 把upgrade里头的文件复制到根目录以后，清空upgrade
+2. 新增stop.sh脚本，停止我们的程序和定时器
+3. 用ctrl+C 不能停止运行startup.sh
+
+2016-08-29
 1.watchdog单纯的while循环
 2.脚本分2个 startup.sh    作用： 每隔1分钟调用一次 run.sh  ；放在app根目录，所有终端用户点击后启动客户端 run.sh  作用：判断端口、进程、标志文件；，启动、重启客户端，等等复杂功能， 放在 app/conf目录下
 3.日志为app目录下的startup.log, 可以在run.sh的 LOG_FILE=$APP_DIR/startup.log设置

@@ -18,6 +18,8 @@ JAVA_HOME=$APP_DIR/jre
 APP_PORT=6081
 #LOG路径
 LOG_FILE=$APP_DIR/startup.log
+#心跳文件路径
+HEARTBREAK_FILE=$FILE_DIR/heartbreak.txt
 
 checkservice() {
 sleep 3 
@@ -94,6 +96,7 @@ else
 fi 
 }
 
+echo `mydate` > $HEARTBREAK_FILE
 checkflag
 if [ $? -eq 1 ];
 then

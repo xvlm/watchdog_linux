@@ -14,9 +14,9 @@ APP_DIR=$FILE_DIR
 SHELL_DIR=$APP_DIR/conf
 
 checkitem="$0"
-let procCnt=`ps -A --format='%p%P%C%x%a' --width 2048 -w --sort pid|grep "$checkitem"|grep -v grep|grep -v " -c sh "|grep -v "$$" | grep -c sh|awk '{printf("%d",$1)}'`
-if [ ${procCnt} -gt 0 ] ; then
-    echo "$0脚本已经在运行[procs=${procCnt}],此次执行自动取消."
+procCnt=`ps -ef|grep "$checkitem"|grep -v 'grep'|grep -v "$$"|awk '{print $2}'|wc -l`
+if [ $procCnt -gt 0 ] ; then
+    echo "$0 exists [procs=${procCnt}]"
     exit 1;
 fi
 

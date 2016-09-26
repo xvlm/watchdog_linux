@@ -25,9 +25,9 @@ else
 fi
 }
 
-stop(){
+killapp(){
 echo [`mydate`]stoping startup.sh! >> $LOG_FILE
-ps -ef | grep $STARTUP_NAME | grep -v grep | awk '{print $2}' | xargs kill -9 > /dev/null 
+ps -ef | grep $STARTUP_NAME | grep -v 'grep' | awk '{print $2}' | xargs kill -9 > /dev/null 
 if [  $? -eq 0 ];
 then
     echo [`mydate`]startup.sh Service stop success! >> $LOG_FILE
@@ -46,5 +46,5 @@ fi
 
 }
 
-stop
+killapp
 exit

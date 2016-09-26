@@ -23,8 +23,8 @@ HEARTBREAK_FILE=$FILE_DIR/heartbreak.txt
 
 checkservice() {
 sleep 3 
-appnum=`ps -ef | grep $APP_NAME | grep -v grep | awk '{print $2}' | wc -l`
-portnum=`netstat -an | grep $APP_PORT | grep -i listen | wc -l`
+appnum=`ps -ef | grep "$APP_NAME" | grep -v 'grep' | awk '{print $2}' | wc -l`
+portnum=`netstat -an | grep "$APP_PORT" | grep -i listen | wc -l`
 echo "appnum=$appnum portnum=$portnum" >> $LOG_FILE
 if [ $portnum -ne 0 ] && [ $appnum -ne 0 ];then
       return 1
@@ -61,7 +61,7 @@ return 0
 fi
 export JAVA_HOME
 
-ps -ef | grep $APP_NAME | grep -v grep | awk '{print $2}' | xargs kill -9 > /dev/null
+ps -ef | grep "$APP_NAME" | grep -v 'grep' | awk '{print $2}' | xargs kill -9 > /dev/null
 $JAVA_HOME/bin/java -jar $APP_DIR/$APP_NAME & > /dev/null
 checkservice
 if [  $? -ne 1 ];
@@ -91,7 +91,7 @@ if [ $? -ne 0 ]; then
 else
    rm -f $UPDATING_FLAG_PATH
    rm -f $FLAG_PATH
-   rm -fr $UPDATING_FLAG_PATH/*
+   rm -fr $UPDATE_DIR/*
    return 1
 fi 
 }

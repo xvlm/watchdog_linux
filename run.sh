@@ -12,19 +12,25 @@ FLAG_PATH=$APP_DIR/"_RESET.txt"
 UPDATE_DIR=$APP_DIR/"upgrade"
 #update 任务执行标记
 UPDATING_FLAG_PATH=$APP_DIR/"_updating"
-#JRE目录
-JAVA_HOME=$APP_DIR/jre
 #检测端口号
-APP_PORT=6081
+#APP_PORT=6081
+APP_PORT=`cat $FILE_DIR/app.properties | grep HTTP_PORT | awk -F '=' '{print $2}'`
 #LOG路径
 LOG_FILE=$APP_DIR/startup.log
 #心跳文件路径
 HEARTBREAK_FILE=$FILE_DIR/heartbreak.txt
 
+#JRE目录 根据linux 版本判断调用32位还是64位jre
+if [ $(getconf WORD_BIT) = '32' ] && [ $(getconf LONG_BIT) = '64' ] ; then
+    JAVA_HOME=$APP_DIR/jre64
+else
+    JAVA_HOME=$APP_DIR/jre32
+fi
+
 checkservice() {
 sleep 3 
-appnum=`ps -ef | grep "$APP_NAME" | grep -v 'grep' | awk '{print $2}' | wc -l`
-portnum=`netstat -an | grep "$APP_PORT" | grep -i listen | wc -l`
+appnum=`ps -ef | grep $APP_NAME | grep -v 'grep' | awk '{print $2}' | wc -l`
+portnum=`netstat -an | grep $APP_PORT | grep -i listen | wc -l`
 echo "appnum=$appnum portnum=$portnum" >> $LOG_FILE
 if [ $portnum -ne 0 ] && [ $appnum -ne 0 ];then
       return 1
@@ -61,7 +67,7 @@ return 0
 fi
 export JAVA_HOME
 
-ps -ef | grep "$APP_NAME" | grep -v 'grep' | awk '{print $2}' | xargs kill -9 > /dev/null
+ps -ef | grep $APP_NAME | grep -v grep | awk '{print $2}' | xargs kill -9 > /dev/null
 $JAVA_HOME/bin/java -jar $APP_DIR/$APP_NAME & > /dev/null
 checkservice
 if [  $? -ne 1 ];

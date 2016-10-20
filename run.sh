@@ -68,7 +68,10 @@ fi
 export JAVA_HOME
 
 ps -ef | grep $APP_NAME | grep -v grep | awk '{print $2}' | xargs kill -9 > /dev/null
-$JAVA_HOME/bin/java -jar $APP_DIR/$APP_NAME & > /dev/null
+if [ ! -x "$JAVA_HOME/bin/java" ]; then
+   chmod +x $JAVA_HOME/bin/java
+fi
+nohup $JAVA_HOME/bin/java -jar $APP_DIR/$APP_NAME & > /dev/null
 checkservice
 if [  $? -ne 1 ];
 then

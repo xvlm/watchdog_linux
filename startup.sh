@@ -15,13 +15,16 @@ SHELL_DIR=$APP_DIR/conf
 
 checkitem="$0"
 procCnt=`ps -ef|grep "$checkitem"|grep -v 'grep'|grep -v "$$"|awk '{print $2}'|wc -l`
-if [ $procCnt -gt 0 ] ; then
+if [ $procCnt -gt 0 ] ; then    
     echo "$0 exists [procs=${procCnt}]"
     exit 1;
 fi
 
 while [ true ];
 do
+   if [ ! -x "$SHELL_DIR/$SHELL_NAME" ]; then
+      chmod +x $SHELL_DIR/$SHELL_NAME
+   fi
    $SHELL_DIR/$SHELL_NAME
    sleep $EXEC_INTERVAL
 done

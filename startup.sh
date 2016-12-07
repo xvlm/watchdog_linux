@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/ksh
 # This shell is used to check the fts real time service is alive, if not, restart fts.
 trap " " 2
 #Define variable

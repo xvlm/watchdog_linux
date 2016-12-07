@@ -1,3 +1,4 @@
+#!/bin/ksh
 #Define variable
 
 #检测的程序名称
@@ -14,7 +15,7 @@ UPDATE_DIR=$APP_DIR/"upgrade"
 UPDATING_FLAG_PATH=$APP_DIR/"_updating"
 #检测端口号
 #APP_PORT=6081
-APP_PORT=`cat $FILE_DIR/app.properties | grep HTTP_PORT | awk -F '=' '{print $2}'`
+APP_PORT=`cat $FILE_DIR/app.properties | grep HTTP_PORT | awk -F= '{print $2}'`
 #LOG路径
 LOG_FILE=$APP_DIR/startup.log
 #心跳文件路径
@@ -27,11 +28,18 @@ else
     JAVA_HOME=$APP_DIR/jre32
 fi
 
+#ps命令用哪个 解决sunos solaris中的PS命令无法正常显示全部内容的问题 
+if [ -f "/usr/ucb/ps" ];then
+   PS_COMMAND="/usr/ucb/ps -auxww"
+else
+   PS_COMMAND="ps -ef"
+fi
+
 checkservice() {
 sleep 3 
-appnum=`ps -ef | grep $APP_NAME | grep -v 'grep' | awk '{print $2}' | wc -l`
+appnum=`$PS_COMMAND | grep $APP_NAME | grep -v 'grep' | awk '{print $2}' | wc -l`
 portnum=`netstat -an | grep $APP_PORT | grep -i listen | wc -l`
-echo "appnum=$appnum portnum=$portnum" >> $LOG_FILE
+echo "$APP_NAME[$appnum] PORT$APP_PORT[$portnum]" >> $LOG_FILE
 if [ $portnum -ne 0 ] && [ $appnum -ne 0 ];then
       return 1
 else
@@ -67,7 +75,7 @@ return 0
 fi
 export JAVA_HOME
 
-ps -ef | grep $APP_NAME | grep -v grep | awk '{print $2}' | xargs kill -9 > /dev/null
+$PS_COMMAND | grep $APP_NAME | grep -v grep | awk '{print $2}' | xargs kill -9 > /dev/null
 if [ ! -x "$JAVA_HOME/bin/java" ]; then
    chmod +x $JAVA_HOME/bin/java
 fi
@@ -90,7 +98,7 @@ echo "[`mydate`]UPDATE_DIR not exists" >> $LOG_FILE
 return 0
 fi
 
-ps -ef | grep $APP_NAME | grep -v grep | awk '{print $2}' | xargs kill -9 > /dev/null
+$PS_COMMAND | grep $APP_NAME | grep -v grep | awk '{print $2}' | xargs kill -9 > /dev/null
 sleep 3
 touch $UPDATING_FLAG_PATH
 cp -rf $UPDATE_DIR/*  $APP_DIR
